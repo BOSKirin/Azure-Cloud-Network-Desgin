@@ -2,48 +2,92 @@
 
 The files in this repository were used to create and configure the network depicted below.
 
-Images/Azure-Network-architecture.png
+[Azure-Network-architecture](Images/Azure-Network-architecture.png)
 
-These files have been tested and used to generate webserver containers, a live ELK deployment and loadbalancer on Azure. They can be used to either recreate the entire deployment pictured above. Alternatively, select portions of the yml file may be used to install only certain pieces of it, such as Filebeat.
+These files have been
+- Tested and configure the **jump box** to run **Docker containers** and to install a **container**
+- Tested and used to generate **webserver containers**, a live **ELK deployment** and **loadbalancer** on Azure. They can be used to either recreate the entire deployment pictured above. Alternatively, select portions of the yml file may be used to install only certain pieces of it, such as __Filebeat__.
 
+## Configure jump box
+- start by installing **docker.io** on the Jump box
+        sudo apt install docker.io
+        
+- verify that the Docker service is running
+        sudo systemctl service docker
+        
+- Once Docker is installed, pull the container **cyberxsecurity/ansible**
+        sudo docker pull cyberxsecurity/ansible
+    - _NOTE: you can also switch to the root user so you don't have to keep tying **sudo**_
+    
+- Launch the Ansible container and connect to it using the appropriate Docker commands
+  - To start the container
+        sudo docker run -ti cyberxsecurity/ansible:latest bash
+        
+  - To quit the container
+        exit
+
+- Create a new security group rule that allows your jump box machine full access to your VNet
+  - Get the private IP address of your jump box
+  - Go to your security group settings and create an **inbound** rule. Create rules allowing **SSH** connections from your IP address
+    - Source: Use the **IP Addresses** setting with your jump box's internal IP address in the field
+    - Source port ranges: **Any** or \* can be listed here
+    - Destination: Set to **VirtualNetwork**
+    - Destination port ranges: Only allow SSH. So, only port **22**
+    - Protocol: Set to **Any** or **TCP**
+    - Action: Set to **Allow** traffic from your jump box
+    - Priority: Priority must be a lower number than your rule to deny all traffic
+    - Name: Name this rule anything you like, but it should describe the rule. _For example: SSH from Jump Box_
+    - Description: Write a short description similar to: "_Allow SSH from the jump box IP_"
+    
 ## Automated Webserver containers Deployment
 
 To create an Ansible plyabook that installed Docker and configure a VM with the DVWA web app.
 
 ### Steps
 - Connect to your jump box
-  - ssh -i path/private_key username@IP_address_of_your_jump_box
+  - ssh -i path/private-key username@Jump-box-VM-public-IP
+  
 - Connect to the Ansible container in the box
   - if you don't remember the name of your container, run the command below to check the name
-    sudo docker container list -a
+        sudo docker container list -a
+        
   - Start the container using
-    sudo docker start container_name
+        sudo docker start container_name
+        
   - Get a shell in your container using
-    sudo docker attach container_name
+        sudo docker attach container_name
+        
 - Create a YAML playbook file that you will use for web app configuration
-  - /etc/ansible/webserver-playbook.yml
-    - _TODO: YAML reference and playbook reference
+  - /etc/ansible/[webserver-playbook.yml](YMAL/webserver-playbook.yml)
     - Use the Ansible **apt** module to install **docker.io** and **python-pip**
-      "- name: docker.io
-         apt:
-           force_apt_get: yes
-           name: docker.io
-           state: present"
+    
+            - name: docker.io
+              apt:
+              force_apt_get: yes
+              name: docker.io
+              state: present
            
-       "- name: Install pip
-          apt:
-            force_apt_get: yes
-            name: python-pip
-            state: present"
+            - name: Install pip
+              apt:
+              force_apt_get: yes
+              name: python-pip
+              state: present"
+              
   - Use the Ansible **pip** module to install **docker**
     - _TODO: script here
+    
   - Use the Ansible **docker-container** module to install the **cyberxsecurity/dvwa** container (make sure you publish port **80** on the container to port **80** on the host
     - _TODO_: script here
+    
   - Run your Ansible playbook on the new virtual machine
+        sudo ansible-playbook /etc/ansible/webserver-playbook.yml
+        
   - To test that DVWA is running on the new VM, **SSH** to the new VM from your Ansible container
-    ssh ansible_name@IP_address_of_the_new_vm
-    - run the following _curl_ command to test the connection, if everything is working, you should get back some **HTML** from the DVWA container
-      curl localhost/setup.php
+    ssh ansible-VM-name@new-VM-IP
+    
+    - run the following **_curl_** command to test the connection, if everything is working, you should get back some **HTML** from the DVWA container
+            curl localhost/setup.php
+      
 - _TODO: may need more details about how to provision
      
 ## Setup Load Balancer
