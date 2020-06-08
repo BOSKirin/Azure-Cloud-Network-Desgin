@@ -1,14 +1,43 @@
 # Azure-Cloud-Network-Desgin
 
+This document contains the following details:
+- [Description of the Topology](#description-of-the-topology)
+- [Access Policies](#access-policies)
+- [ELK Configuration](#elk-configuration)
+  - [Beats in Use](beats-in-use)
+  - [Machines Being Monitored](machines-being-monitored)
+- [How to Use the Ansible Build](how-to-use-the-ansible-build)
+
 The files in this repository were used to create and configure the network depicted below.
 
+### Description of the Topology
+
 [Azure-Network-architecture](Images/Azure-Network-architecture.png)
+
+The main purpose of this network is to expose a load-balanced and monitored instance of DVWA, the D*mn Vulnerable Web Application.
+
+Load balancing ensures that the application will be highly available (responsive), in addition to restricting traffic to the network.
+- The load balancers defend an organization against distributed denial-of-service (DDoS) attack by rerouting heavy traffic from one server to another to eliminate single points of failure, reduce the attack surface, and make it harder to exhaust resources and saturate links. The advantage of a jump box here is to prevents all Azure VM's to expose to the public, which means that the jump box will be our entry point connecting via Remote Desktop Protocol (RDP) from our on-premise network. In addition, the jump box also helps us to open only one port instead of several ports to connect different VMs in the Azure cloud.
+
+Integrating an ELK server allows users to easily monitor the vulnerable VMs for changes to the infrastructure and system logs.
+- Filebeat is used for collecting and shipping log files. It can be installed on almost any operating system, including as a Docker container.
+- Metricbeat collects ships various system-level metrics for various systems and platforms.
+
+The configuration details of each machine may be found below.
+
+| Name     | Function     | IP Address | Operating System |
+|----------|--------------|------------|------------------|
+| Jump Box | Gateway      | 10.0.0.4   | Linxu            |
+| DVWA-VM1 | Webserver    | 10.0.0.5   | Linux            |
+| DVWA-VM2 | Webserver    | 10.0.0.6   | Linux            |
+| DVWA-VM3 | ELK Server   | 10.1.0.4   | Linux            |
+| DVWA-VM4 | Spare Server | 10.1.0.5   | Linux            |
 
 These files have been
 - Tested and configure the **jump box** to run **Docker containers** and to install a **container**
 - Tested and used to generate **webserver containers**, a live **ELK deployment** and **loadbalancer** on Azure. They can be used to either recreate the entire deployment pictured above. Alternatively, select portions of the yml file may be used to install only certain pieces of it, such as __Filebeat__.
 
-## Configure jump box
+### Configure jump box
 - start by installing **docker.io** on the Jump box
         sudo apt install docker.io
         
@@ -39,11 +68,11 @@ These files have been
     - Name: Name this rule anything you like, but it should describe the rule. _For example: SSH from Jump Box_
     - Description: Write a short description similar to: "_Allow SSH from the jump box IP_"
     
-## Automated Webserver containers Deployment
+### Automated Webserver containers Deployment
 
 To create an Ansible plyabook that installed Docker and configure a VM with the DVWA web app.
 
-### Steps
+#### Steps
 - Connect to your jump box
   - ssh -i path/private-key username@Jump-box-VM-public-IP
   
@@ -90,60 +119,35 @@ To create an Ansible plyabook that installed Docker and configure a VM with the 
       
 - _TODO: may need more details about how to provision
      
-## Setup Load Balancer
+### Setup Load Balancer
 
   - _TODO: steps here
  
-## Redundancy Testing
+### Redundancy Testing
 
 - _TODO:  more details here
 
-## Automated ELK Stack Deployment
+### Automated ELK Stack Deployment
 
-  - elk-playbook.yml
-  - filebeat-playbook.yml
-  - filebeat-configuration.yml
-  - filebeat.yml
-
-This document contains the following details:
-- Description of the Topology
-- Access Policies
-- ELK Configuration
-  - Beats in Use
-  - Machines Being Monitored
-- How to Use the Ansible Build
+  - [elk-playbook.yml](YMAL/elk-playbook.yml)
+  - [filebeat-playbook.yml](YMAL/filebeat-playbook.yml)
+  - [filebeat-configuration.yml](YMAL/filebeat-configuration.yml)
+  - [filebeat.yml](YMAL/filebeat.yml)
 
 
-### Description of the Topology
 
-The main purpose of this network is to expose a load-balanced and monitored instance of DVWA, the D*mn Vulnerable Web Application.
 
-Load balancing ensures that the application will be highly _____, in addition to restricting _____ to the network.
-- _TODO: What aspect of security do load balancers protect? What is the advantage of a jump box?_
 
-Integrating an ELK server allows users to easily monitor the vulnerable VMs for changes to the _____ and system _____.
-- _TODO: What does Filebeat watch for?_
-- _TODO: What does Metricbeat record?_
-
-The configuration details of each machine may be found below.
-_Note: Use the [Markdown Table Generator](http://www.tablesgenerator.com/markdown_tables) to add/remove values from the table_.
-
-| Name     | Function | IP Address | Operating System |
-|----------|----------|------------|------------------|
-| Jump Box | Gateway  | 10.0.0.1   | Linux            |
-| TODO     |          |            |                  |
-| TODO     |          |            |                  |
-| TODO     |          |            |                  |
 
 ### Access Policies
 
 The machines on the internal network are not exposed to the public Internet. 
 
-Only the _____ machine can accept connections from the Internet. Access to this machine is only allowed from the following IP addresses:
-- _TODO: Add whitelisted IP addresses_
+Only the Jump-box machine can accept connections from the Internet. Access to this machine is only allowed from the following IP addresses:
+- _Add whitelisted IP addresses into the firewall rules to allow the inbound access, ex. I added the IP address of my local machine_
 
-Machines within the network can only be accessed by _____.
-- _TODO: Which machine did you allow to access your ELK VM? What was its IP address?_
+Machines within the network can only be accessed by the Jump-box machine and other machines in the network.
+- Only my local machine which is in the whitelisted machine added into the firewall rules (you can use [https://whatismyipaddress.com/](https://whatismyipaddress.com/) to check your IP address) from Internet can access the ELK server besides all other machines within the network.
 
 A summary of the access policies in place can be found in the table below.
 
