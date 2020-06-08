@@ -151,16 +151,22 @@ Machines within the network can only be accessed by the Jump-box machine and oth
 
 A summary of the access policies in place can be found in the table below.
 
-| Name     | Publicly Accessible | Allowed IP Addresses |
-|----------|---------------------|----------------------|
-| Jump Box | Yes/No              | 10.0.0.1 10.0.0.2    |
-|          |                     |                      |
-|          |                     |                      |
+| Name     | Publicly Accessible | Allowed IP Addresses                                                                               |
+|----------|---------------------|----------------------------------------------------------------------------------------------------|
+| Jump Box | Yes                 | IP-in-whitelist (ex. IP-of-my-own-machine)                                                         |
+| DVWA-VM1 | Yes                 | Any                                                                                                |
+| DVWA-VM2 | Yes                 | Any                                                                                                |
+| DVWA-VM3 | Yes                 | 10.0.0.4 10.0.0.5 10.0.0.6 10.1.0.5 IP-in-whitelist (from external network, ex. My-own-machine-IP) |
+| DVWA-VM4 | Yes                 | 10.0.0.4 10.1.0.4                                                                                  |
 
 ### Elk Configuration
 
 Ansible was used to automate configuration of the ELK machine. No configuration was performed manually, which is advantageous because...
-- _TODO: What is the main advantage of automating configuration with Ansible?_
+- Free: Ansible is an open-source tool
+- Idempotent: can be used to deploy to the multiple machine with identical settings
+- Powerful: Ansible lets you model even highly complex IT workflows
+- Efficient: you don't need to install any extra software, there's more room for application resources on your server
+- Tiny Learning Curve: no special coding skills are needed to use Ansible's playbook
 
 The playbook implements the following tasks:
 - _TODO: In 3-5 bullets, explain the steps of the ELK installation play. E.g., install Docker; download image; etc._
