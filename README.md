@@ -20,6 +20,7 @@ The main purpose of this network is to expose a load-balanced and monitored inst
 ### Description of the Topology
 
 [Azure-Network-architecture](Images/Azure-Network-architecture.png)
+![Azure-Network-architecture](Images/Azure-Network-architecture.png)
 
 - Jump box
   - region: East US
