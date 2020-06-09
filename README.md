@@ -467,4 +467,17 @@ Next, you needed to confirm that the ELK stack was receiving logs. Navigate back
  
 ### Redundancy Testing
 
-- _TODO:  more details here
+Verify that the DVWA site is up and running and can be accessed from the web
+- Position three windows on your screen so you can see the website and the details page of both VMs in your backend pool
+
+![Both webservers are up](Images/both-webservers-up.png)
+
+- Turn off one of your VMs from the Azure portal. Confirm if you can still access the DVWA website
+  - You should still be able to access the site when one of the VMs is off
+  
+![Webserver one up one down](Images/webserver-one-up-one-down.png)
+
+- Turn off the other VM. Verify that the DVWA site stops working
+  - With both VMs stopped, the site should go down
+
+![Both webservers are down](Images/both-werbservers-down.png)
