@@ -93,6 +93,7 @@ A summary of the access policies in place can be found in the table below.
 ### Jump box Configuration
 
 - Generate a RSA key pair for the SSH connection to the jump-box machine
+
 		sudo ssh-keygen
 		
 - Copy the SSH public key and paste it into the required filed for SSH connection when you create jump-box machine or you can redeploy it in the **Reset password** section after you created jump-box machine
@@ -115,6 +116,8 @@ A summary of the access policies in place can be found in the table below.
 - Connect to your jump-box machine
        
         ssh -i path/private-key username@Jump-box-VM-public-IP
+        
+    ![Login Jump box](Images/loginJumpbox.png)
   
 - start by installing **docker.io** on the jump-box machine
         
@@ -160,6 +163,7 @@ A summary of the access policies in place can be found in the table below.
   - Copy the public key string
   
 - Return to the Azure portal and create a new VM (DVWA-VM1). Use all the same settings you used on the first VM (jump-box)
+  - **_Note: this procedure will be used for service or application deployment to all DVWA-VMs_**
 
 - After your VM launches, test your connection using **ssh** from your jump box Ansible container
 
@@ -197,14 +201,52 @@ Ansible was used to automate configuration of the ELK machine. No configuration 
 - Efficient: you don't need to install any extra software, there's more room for application resources on your server
 - Tiny Learning Curve: no special coding skills are needed to use Ansible's playbook
 
-The playbook implements the following tasks:
-- _TODO: In 3-5 bullets, explain the steps of the ELK installation play. E.g., install Docker; download image; etc._
-- ...
-- ...
+1. Create a New VM as ELK server
+
+2. Downloading and Configuring the Container
+- Add the new VM to the Ansible `hosts` file
+- Create a new Ansible playbook to use for the new ELK server machine
+
+  - The playbook implements the following tasks:
+    - The header of the Ansible playbook can specify a different group of machines as well as a different remote user (in case you did not use the same admin name)
+            
+            - name: Config elk VM with Docker
+              hosts: elkservers
+              remote\_user: elk
+              become: true
+              tasks:
+    
+    - The first task of the playbook needs to increase the virtual memory on the VM by running this command:
+            
+            sysctl -w vm.max_map_count=262144
+        _Note: This is a system requirement for the ELK container. More info at the [elk-docker documentation](https://elk-docker.readthedocs.io/#prerequisites)
+
+    - The playbook should then install the following services:
+      - **docker.io**
+      - **python-pip**
+      - **docker**, which is the Docker Python module
 
 The following screenshot displays the result of running `docker ps` after successfully configuring the ELK instance.
 
-![start-elk](Images/start-elk.png)
+![start-elk](Images/elk-start.png)
+      
+3. Launching and Exposing the Container
+
+After Docker is installed, download and run the **sebp/elk** container
+
+- The container should be started with these published ports:
+  - `5601:5601`
+  - `9200:9200`
+  - `5044:5044`
+
+- SSH from your Ansible container to your ELK machine to verify the connection before you run your playbook
+- After the ELK container is installed, SSH to your container and double check that your **elk-docker** container is running
+
+4. Identity and Access Management
+This ELK web server runs on port `5601`. Create an incoming rule for your security group that allows TCP traffic over port `5601` from your IP address
+
+Verify that you can load the ELK stack server from your browser at **http://[your.VM.IP]:5601**
+![Verify-ELK](Images/elk-verify.png)
 
 ###### Target Machines and Beats
 
@@ -217,8 +259,6 @@ We have installed the following Beats on these machines:
 
 - filebeat: DVWA-VM1 and DVWA-VM2
 - metricbeat: DVWA-VM1 and DVWA-VM2
-
-Generate SSH key
 
 ##### Webserver Deployment
 
@@ -328,7 +368,7 @@ Create another Ansible playbook that accomplishes the Linux Filebeat installatio
     
         dpkg -i filebeat-7.4.0-amd64.deb
     
-  - Copy the Filebeat configuration file from your Ansible container to your ELK VM
+  - Copy the Filebeat configuration file from your Ansible container to your Webserver VM
     - You can use the Ansible module **copy** to copy the entire configuration file into the correct place
     - You will need to place the configuration file in a directory called **files** in your Ansible directory
 
@@ -390,38 +430,38 @@ Scroll to line #97 and replace the IP address with the IP address of your ELK ma
 ![](Images/metricbeat-configuration-elasticsearch.png)
 
 Scroll to line #63 and replace the IP address with the IP address of your ELK machine
-![](Images/filebeat-configuration-kibana.png)
+![](Images/metricbeat-configuration-kibana.png)
 
-Save this file in `/etc/ansible/files/filebeat-configuration.yml`
+Save this file in `/etc/ansible/files/metricbeat-configuration.yml`
 
-3. Creating the Filebeat Installation Play
+3. Creating the Metricbeat Installation Play
 
-Create another Ansible playbook that accomplishes the Linux Filebeat installation instructions
+Create another Ansible playbook that accomplishes the Linux Metricbeat installation instructions
 
 - The playbook should:
-  - Download the **.deb** file from [artifacts.elastic.co](https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.4.0-amd64.deb)
+  - Download the [**Metricbeat .deb** file](https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.4.0-amd64.deb)
   - Install the **.deb** file using the **dpkg** command shown below:
     
-        dpkg -i filebeat-7.4.0-amd64.deb
+        dpkg -i metricbeat-7.6.1-amd64.deb
     
-  - Copy the Filebeat configuration file from your Ansible container to your ELK VM
+  - Copy the Metricbeat configuration file from your Ansible container to your Webserver VM
     - You can use the Ansible module **copy** to copy the entire configuration file into the correct place
     - You will need to place the configuration file in a directory called **files** in your Ansible directory
 
-  - Run the command `filebeat modules enable system` to enable and configure system module
-  - Run the command `filebeat setup` to setup filebeat
-  - Run the command `service filebeat start` to start filebeat service
+  - Run the command `metricbeat modules enable docker` to enable and configure docker module
+  - Run the command `metricbeat setup` to setup metricbeat
+  - Run the command `service metricbeat start` to start metricbeat service
   
-- Run the command `ansible-playbook filebeat-playbook.yml` to deploy the filebeat to the DVWA-VM1 and DVWA-VM2
+- Run the command `ansible-playbook metricbeat-playbook.yml` to deploy the metricbeat to the DVWA-VM1 and DVWA-VM2
 
 4. Verifying Installation and Playbook
 
-Next, you needed to confirm that the ELK stack was receiving logs. Navigate back to the Filebeat installation page on the ELK server GUI
+Next, you needed to confirm that the ELK stack was receiving logs. Navigate back to the Metricbeat installation page on the ELK server GUI
 
 - Verify that your playbook is completing Steps 1-4
 - On the same page, scroll to **Step 5: Module Status** and click **Check Data**
 - Scroll to the bottom and click on **Verify Incoming Data**
-![](Images/filebeat-verify-incoming-data.png)
+![](Images/metricbeat-verify-incoming-data.png)
  
 ### Redundancy Testing
 

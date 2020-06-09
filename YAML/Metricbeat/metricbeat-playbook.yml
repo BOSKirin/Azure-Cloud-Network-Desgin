@@ -15,7 +15,7 @@
       src: /etc/ansible/metricbeat-configuration.yml
       dest: /etc/metricbeat/metricbeat.yml
 
-  - name: enable and configure system module
+  - name: enable and configure docker module
     command: sudo metricbeat modules enable docker
 
   - name: setup metricbeat
