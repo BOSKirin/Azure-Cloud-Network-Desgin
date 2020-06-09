@@ -113,34 +113,44 @@ A summary of the access policies in place can be found in the table below.
 ### Ansible Configuration
 
 - Connect to your jump-box machine
+       
         ssh -i path/private-key username@Jump-box-VM-public-IP
   
 - start by installing **docker.io** on the jump-box machine
+        
         sudo apt install docker.io
         
 - verify that the Docker service is running
+        
         sudo systemctl service docker
         
 - Once Docker is installed, pull the container **cyberxsecurity/ansible**
+        
         sudo docker pull cyberxsecurity/ansible
     - _NOTE: you can also switch to the root user so you don't have to keep tying **sudo**_
     
 - Launch the Ansible container and connect to it using the appropriate Docker commands
   - To start the container
+       
         sudo docker run -ti cyberxsecurity/ansible:latest bash
         
   - If the Ansible has been installed, use commands below:
     - if you don't remember the name of your container, run the command below to check the name
+         
             sudo docker container list -a
         
   	- Start the container using
+          
             sudo docker start container_name
         
   	- Get a shell in your container using
+           
             sudo docker attach container_name
         
   - To quit the container
+        
         exit
+        
 #### How to Use the Ansible Build Automated Deployment
 
 - Connect to your Ansible container. Once you're connected, create a new SSH key and copy the public key
@@ -241,6 +251,7 @@ To create an Ansible plyabook that installed Docker and configure a VM with the 
 
   - Use the Ansible `docker-container` module to install the `cyberxsecurity/dvwa` container
     - _Note: make sure publish port **80** on the container to port **80** on the host
+          
             - name: download and launch a docker web container
               docker\_container:
                 name: dvwa
@@ -249,13 +260,16 @@ To create an Ansible plyabook that installed Docker and configure a VM with the 
                 published\_ports: 80:80
 
   - Run your Ansible playbook on the new virtual machine
+        
         sudo ansible-playbook /etc/ansible/webserver-playbook.yml
         
   - To test that DVWA is running on the new VM, **SSH** to the new VM from your Ansible container
-    ssh ansible-VM-name@new-VM-IP
+        
+        ssh ansible-VM-name@new-VM-IP
     
-    - run the following **_curl_** command to test the connection, if everything is working, you should get back some **HTML** from the DVWA container
-            curl localhost/setup.php
+  - run the following **_curl_** command to test the connection, if everything is working, you should get back some **HTML** from the DVWA container
+          
+        curl localhost/setup.php
       
 ##### Filebeat Deployment
 
