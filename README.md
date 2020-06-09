@@ -143,6 +143,36 @@ A summary of the access policies in place can be found in the table below.
         exit
 #### How to Use the Ansible Build Automated Deployment
 
+- Connect to your Ansible container. Once you're connected, create a new SSH key and copy the public key
+  - Run `ssh-keygen` to create an SSH key
+  - Run `ls .ssh/` to view SSH key
+  - Run `cat .ssh/id_rsa.pub` to display the public key
+  - Copy the public key string
+  
+- Return to the Azure portal and create a new VM (DVWA-VM1). Use all the same settings you used on the first VM (jump-box)
+
+- After your VM launches, test your connection using **ssh** from your jump box Ansible container
+        ssh ansible@new-created-vm-IP
+        
+  - Note: If only TCP connections are enabled for `SSH` in your security group rule, ICMP packets will not be allowed, so you will not be able to use `ping`
+
+- Exit this SSH session by running `exit` if the `SSH` connection was able to establish
+
+- Locate the Ansible config file and hosts file
+        ls /etc/ansible
+        
+  - Add this machine's internal IP address to the Ansible hosts file
+  - Open the file with `nano /etc/ansible/hosts`
+  - Uncomment the `[webservers]` header line
+  - Add the internal IP address under the `[webservers]` header
+  
+- Change the Ansible configuration file to use your administrator account for SSH connections
+  - Open the file with `nano /etc/ansible/ansible.cfg` and scroll down to the **remote\_user** option
+  - Uncomment the **remote\_user** line and replace **root** with your admin username
+  
+- Test an Ansible connection using the appropriate Ansible command
+        ansible -m ping all
+
 ##### Elk Configuration
 
 Ansible was used to automate configuration of the ELK machine. No configuration was performed manually, which is advantageous because...
