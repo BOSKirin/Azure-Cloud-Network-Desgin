@@ -11,6 +11,7 @@ This document contains the following details:
     - [Webserver Deployment](#webserver-deployment)
     - [Filebeat Deployment](#filebeat-deployment)
     - [Metricbeat Deployment](#metricbeat-deployment)
+- [Redundancy Testing](#redundancy-testing)
 
 The files in this repository were used to create and configure the network depicted below.
 
