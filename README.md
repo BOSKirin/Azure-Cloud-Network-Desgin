@@ -277,7 +277,7 @@ Below are the solution configuration files for setting up the Filebeat configura
 
   - [Filebeat Configuration](YAML/Filebeat/filebeat-configuration.yml)
   - [Filebeat Playbook](YAML/Filebeat/filebeat-playbook.yml)
-  
+
 - Installing Filebeat on the DVWA Container
 
 First, make sure that our ELK server container is up and running.
@@ -289,11 +289,11 @@ First, make sure that our ELK server container is up and running.
 
 Install Filebeat on your DVWA VM:
 
-Open your ELK server homepage.
+- Open your ELK server homepage
 
-Click on Add Log Data.
-Choose System Logs.
-Click on the DEB tab under Getting Started to view the correct Linux Filebeat installation instructions.
+  - Click on **Add Log Data**
+  - Choose **System Logs**
+  - Click on the **DEB** tab under **Getting Started** to view the correct Linux Filebeat installation instructions
 
 
 
