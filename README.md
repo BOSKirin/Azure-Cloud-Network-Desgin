@@ -70,6 +70,8 @@ These files have been
 - Tested and configure the **jump box** to run **Docker containers** and to install a **container**
 - Tested and used to generate **webserver containers**, a live **ELK deployment** and **loadbalancer** on Azure. They can be used to either recreate the entire deployment pictured above. Alternatively, select portions of the yml file may be used to install only certain pieces of it, such as __Filebeat__.
 
+**_Note: It is necessary to setup peering for VMs connections between different regions_**
+
 ### Access Policies
 
 The machines on the internal network are not exposed to the public Internet. 
