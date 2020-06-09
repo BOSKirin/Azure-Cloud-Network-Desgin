@@ -199,8 +199,6 @@ This ELK server is configured to monitor the following machines:
 We have installed the following Beats on these machines:
 - filebeat: DVWA-VM1 and DVWA-VM2
 - metricbeat: DVWA-VM1 and DVWA-VM2
-    
-
 
 Generate SSH key
 
@@ -209,7 +207,7 @@ Generate SSH key
 To create an Ansible plyabook that installed Docker and configure a VM with the DVWA web app.
         
 - Create a YAML playbook file that you will use for web app configuration
-  - /etc/ansible/[webserver-playbook.yml](YMAL/webserver-playbook.yml)
+  - The playbook  should read similar to /etc/ansible/[webserver-playbook.yml](YMAL/Webserver/webserver-playbook.yml), the details for each part in the playbook as depicted below:
     - Use the Ansible **apt** module to install **docker.io** and **python-pip**
     
             - name: docker.io
@@ -225,11 +223,19 @@ To create an Ansible plyabook that installed Docker and configure a VM with the 
               state: present"
               
   - Use the Ansible **pip** module to install **docker**
-    - _TODO: script here
-    
-  - Use the Ansible **docker-container** module to install the **cyberxsecurity/dvwa** container (make sure you publish port **80** on the container to port **80** on the host
-    - _TODO_: script here
-    
+        - name: Install Docker python module
+          pip:
+            name: docker
+            state: present
+  - Use the Ansible `docker-container` module to install the `cyberxsecurity/dvwa` container
+    - _Note: make sure publish port **80** on the container to port **80** on the host
+            - name: download and launch a docker web container
+              docker\_container:
+                name: dvwa
+                image: cyberxsecurity/dvwa
+                state: started
+                published\_ports: 80:80
+
   - Run your Ansible playbook on the new virtual machine
         sudo ansible-playbook /etc/ansible/webserver-playbook.yml
         
@@ -241,6 +247,28 @@ To create an Ansible plyabook that installed Docker and configure a VM with the 
       
 ##### Filebeat Deployment
 
+Below are the solution configuration files for setting up the Filebeat configuration and playbook:
+  - [Filebeat Configuration](YAML/Filebeat/filebeat-configuration.yml)
+  - [Filebeat Playbook](YAML/Filebeat/filebeat-playbook.yml)
+  
+- Installing Filebeat on the DVWA Container
+
+First, make sure that our ELK server container is up and running.
+- Navigate to http://[your.VM.IP]:5601. Use the public IP address of the ELK server that you created
+- If you do not see the ELK server landing page, open a terminal on your computer and SSH into the ELK server
+  - Run `sudo docker ps ` to verify that the container is on
+  - If it isn't, run `sudo docker start elk`
+
+
+
+
+Install Filebeat on your DVWA VM:
+
+Open your ELK server homepage.
+
+Click on Add Log Data.
+Choose System Logs.
+Click on the DEB tab under Getting Started to view the correct Linux Filebeat installation instructions
   - [elk-playbook.yml](YMAL/elk-playbook.yml)
   - [filebeat-playbook.yml](YMAL/filebeat-playbook.yml)
   - [filebeat-configuration.yml](YMAL/filebeat-configuration.yml)
