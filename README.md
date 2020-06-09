@@ -309,14 +309,119 @@ Copy the provided configuration file for Filebeat to your Ansible container: [Fi
 Edit the configuration in this file to match the settings described in the installation instructions for your server
 - Because we are connecting your DVWA machines to the ELK server, we need to edit the file to include your ELK server's IP address
   - Note that the default credentials are **elastic:changeme** and should not be changed at this step
+
+Scroll to line #1105 and replace the IP address with the IP address of your ELK machine
 ![](Images/filebeat-configuration-elasticsearch.png)
 
-  - [elk-playbook.yml](YMAL/elk-playbook.yml)
-  - [filebeat-playbook.yml](YMAL/filebeat-playbook.yml)
+Scroll to line #1805 and replace the IP address with the IP address of your ELK machine
+![](Images/filebeat-configuration-kibana.png)
 
-  - [filebeat.yml](YMAL/filebeat.yml)
+Save this file in `/etc/ansible/files/filebeat-configuration.yml`
+
+3. Creating the Filebeat Installation Play
+
+Create another Ansible playbook that accomplishes the Linux Filebeat installation instructions
+
+- The playbook should:
+  - Download the **.deb** file from [artifacts.elastic.co](https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.4.0-amd64.deb)
+  - Install the **.deb** file using the **dpkg** command shown below:
+    
+        dpkg -i filebeat-7.4.0-amd64.deb
+    
+  - Copy the Filebeat configuration file from your Ansible container to your ELK VM
+    - You can use the Ansible module **copy** to copy the entire configuration file into the correct place
+    - You will need to place the configuration file in a directory called **files** in your Ansible directory
+
+  - Run the command `filebeat modules enable system` to enable and configure system module
+  - Run the command `filebeat setup` to setup filebeat
+  - Run the command `service filebeat start` to start filebeat service
+  
+- Run the command `ansible-playbook filebeat-playbook.yml` to deploy the filebeat to the DVWA-VM1 and DVWA-VM2
+
+4. Verifying Installation and Playbook
+
+Next, you needed to confirm that the ELK stack was receiving logs. Navigate back to the Filebeat installation page on the ELK server GUI
+
+- Verify that your playbook is completing Steps 1-4
+- On the same page, scroll to **Step 5: Module Status** and click **Check Data**
+- Scroll to the bottom and click on **Verify Incoming Data**
+![](Images/filebeat-verify-incoming-data.png)
   
 ##### Metricbeat Deployment
+
+Below are the solution configuration files for setting up the Metricbeat configuration and playbook:
+
+  - [Metricbeat Configuration](YAML/Metricbeat/metricbeat-configuration.yml)
+  - [Metricbeat Playbook](YAML/Metricbeat/metricbeat-playbook.yml)
+
+1. Installing Metricbeat on the DVWA Container
+
+First, make sure that our ELK server container is up and running.
+
+- Navigate to http://[your.VM.IP]:5601. Use the public IP address of the ELK server that you created
+- If you do not see the ELK server landing page, open a terminal on your computer and SSH into the ELK server
+  - Run `sudo docker ps ` to verify that the container is on
+  - If it isn't, run `sudo docker start elk`
+
+Install Metricbeat on your DVWA VM:
+
+- Open your ELK server homepage
+
+  - Click on **Add Metric Data**
+  - Choose **Docker Metrics**
+  - Click on the **DEB** tab under **Getting Started** to view the correct Linux Metricbeat installation instructions
+
+2. Creating the Metricbeat Configuration File
+
+Next, create a Metricbeat configuration file and edit this file so that it has the correct settings to work with your ELK server
+
+- Open a terminal and SSH into your jump box:
+
+  - Start the Ansible container
+  - SSH into the Ansible container
+
+Copy the provided configuration file for Metricbeat to your Ansible container: [Metricbeat Configuration File Template](YAML/Metricbeat/metricbeat-configuration.yml)
+
+Edit the configuration in this file to match the settings described in the installation instructions for your server
+- Because we are connecting your DVWA machines to the ELK server, we need to edit the file to include your ELK server's IP address
+  - Note that the default credentials are **elastic:changeme** and should not be changed at this step
+
+Scroll to line #97 and replace the IP address with the IP address of your ELK machine
+![](Images/metricbeat-configuration-elasticsearch.png)
+
+Scroll to line #63 and replace the IP address with the IP address of your ELK machine
+![](Images/filebeat-configuration-kibana.png)
+
+Save this file in `/etc/ansible/files/filebeat-configuration.yml`
+
+3. Creating the Filebeat Installation Play
+
+Create another Ansible playbook that accomplishes the Linux Filebeat installation instructions
+
+- The playbook should:
+  - Download the **.deb** file from [artifacts.elastic.co](https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.4.0-amd64.deb)
+  - Install the **.deb** file using the **dpkg** command shown below:
+    
+        dpkg -i filebeat-7.4.0-amd64.deb
+    
+  - Copy the Filebeat configuration file from your Ansible container to your ELK VM
+    - You can use the Ansible module **copy** to copy the entire configuration file into the correct place
+    - You will need to place the configuration file in a directory called **files** in your Ansible directory
+
+  - Run the command `filebeat modules enable system` to enable and configure system module
+  - Run the command `filebeat setup` to setup filebeat
+  - Run the command `service filebeat start` to start filebeat service
+  
+- Run the command `ansible-playbook filebeat-playbook.yml` to deploy the filebeat to the DVWA-VM1 and DVWA-VM2
+
+4. Verifying Installation and Playbook
+
+Next, you needed to confirm that the ELK stack was receiving logs. Navigate back to the Filebeat installation page on the ELK server GUI
+
+- Verify that your playbook is completing Steps 1-4
+- On the same page, scroll to **Step 5: Module Status** and click **Check Data**
+- Scroll to the bottom and click on **Verify Incoming Data**
+![](Images/filebeat-verify-incoming-data.png)
  
 ### Redundancy Testing
 
