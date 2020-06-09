@@ -7,10 +7,10 @@ This document contains the following details:
 - [Ansible Configuration](#ansible-configuration)
   - [How to Use the Ansible Build Automated Deployment](how-to-use-the-ansible-build-automated-deployment)
     - [ELK Configuration](#elk-configuration)
-      - [Target Machines and Beats](target-machines-and-beats)
-    - [Webserver Deployment](webserver-deployment)
-    - [Filebeat Deployment](filebeat-deployment)
-    - [Metricbeat Deployment](metricbeat-deployment)
+      - [Target Machines and Beats](#target-machines-and-beats)
+    - [Webserver Deployment](#webserver-deployment)
+    - [Filebeat Deployment](#filebeat-deployment)
+    - [Metricbeat Deployment](#metricbeat-deployment)
 
 The files in this repository were used to create and configure the network depicted below.
 
@@ -152,6 +152,7 @@ A summary of the access policies in place can be found in the table below.
 - Return to the Azure portal and create a new VM (DVWA-VM1). Use all the same settings you used on the first VM (jump-box)
 
 - After your VM launches, test your connection using **ssh** from your jump box Ansible container
+
         ssh ansible@new-created-vm-IP
         
   - Note: If only TCP connections are enabled for `SSH` in your security group rule, ICMP packets will not be allowed, so you will not be able to use `ping`
@@ -159,6 +160,7 @@ A summary of the access policies in place can be found in the table below.
 - Exit this SSH session by running `exit` if the `SSH` connection was able to establish
 
 - Locate the Ansible config file and hosts file
+
         ls /etc/ansible
         
   - Add this machine's internal IP address to the Ansible hosts file
@@ -167,15 +169,18 @@ A summary of the access policies in place can be found in the table below.
   - Add the internal IP address under the `[webservers]` header
   
 - Change the Ansible configuration file to use your administrator account for SSH connections
+
   - Open the file with `nano /etc/ansible/ansible.cfg` and scroll down to the **remote\_user** option
   - Uncomment the **remote\_user** line and replace **root** with your admin username
   
 - Test an Ansible connection using the appropriate Ansible command
+
         ansible -m ping all
 
 ##### Elk Configuration
 
 Ansible was used to automate configuration of the ELK machine. No configuration was performed manually, which is advantageous because...
+
 - Free: Ansible is an open-source tool
 - Idempotent: can be used to deploy to the multiple machine with identical settings
 - Powerful: Ansible lets you model even highly complex IT workflows
@@ -192,11 +197,14 @@ The following screenshot displays the result of running `docker ps` after succes
 ![start-elk](Images/start-elk.png)
 
 ###### Target Machines and Beats
+
 This ELK server is configured to monitor the following machines:
+
 - DVWA-VM1: 10.0.0.5
 - DVWA-VM2: 10.0.0.6
 
 We have installed the following Beats on these machines:
+
 - filebeat: DVWA-VM1 and DVWA-VM2
 - metricbeat: DVWA-VM1 and DVWA-VM2
 
@@ -207,7 +215,9 @@ Generate SSH key
 To create an Ansible plyabook that installed Docker and configure a VM with the DVWA web app.
         
 - Create a YAML playbook file that you will use for web app configuration
+
   - The playbook  should read similar to /etc/ansible/[webserver-playbook.yml](YMAL/Webserver/webserver-playbook.yml), the details for each part in the playbook as depicted below:
+
     - Use the Ansible **apt** module to install **docker.io** and **python-pip**
     
             - name: docker.io
@@ -223,10 +233,12 @@ To create an Ansible plyabook that installed Docker and configure a VM with the 
               state: present"
               
   - Use the Ansible **pip** module to install **docker**
+
         - name: Install Docker python module
           pip:
             name: docker
             state: present
+
   - Use the Ansible `docker-container` module to install the `cyberxsecurity/dvwa` container
     - _Note: make sure publish port **80** on the container to port **80** on the host
             - name: download and launch a docker web container
@@ -248,17 +260,26 @@ To create an Ansible plyabook that installed Docker and configure a VM with the 
 ##### Filebeat Deployment
 
 Below are the solution configuration files for setting up the Filebeat configuration and playbook:
+
   - [Filebeat Configuration](YAML/Filebeat/filebeat-configuration.yml)
   - [Filebeat Playbook](YAML/Filebeat/filebeat-playbook.yml)
   
 - Installing Filebeat on the DVWA Container
 
 First, make sure that our ELK server container is up and running.
+
 - Navigate to http://[your.VM.IP]:5601. Use the public IP address of the ELK server that you created
 - If you do not see the ELK server landing page, open a terminal on your computer and SSH into the ELK server
   - Run `sudo docker ps ` to verify that the container is on
   - If it isn't, run `sudo docker start elk`
 
+Install Filebeat on your DVWA VM:
+
+Open your ELK server homepage.
+
+Click on Add Log Data.
+Choose System Logs.
+Click on the DEB tab under Getting Started to view the correct Linux Filebeat installation instructions.
 
 
 
