@@ -5,7 +5,7 @@ This document contains the following details:
 - [Access Policies](#access-policies)
 - [Jump box Configuration](#jump-box-configuration)
 - [Ansible Configuration](#ansible-configuration)
-  - [How to Use the Ansible Build Automated Deployment](how-to-use-the-ansible-build-automated-deployment)
+  - [How to Use the Ansible Build Automated Deployment](#how-to-use-the-ansible-build-automated-deployment)
     - [ELK Configuration](#elk-configuration)
       - [Target Machines and Beats](#target-machines-and-beats)
     - [Webserver Deployment](#webserver-deployment)
@@ -278,7 +278,7 @@ Below are the solution configuration files for setting up the Filebeat configura
   - [Filebeat Configuration](YAML/Filebeat/filebeat-configuration.yml)
   - [Filebeat Playbook](YAML/Filebeat/filebeat-playbook.yml)
 
-- Installing Filebeat on the DVWA Container
+1. Installing Filebeat on the DVWA Container
 
 First, make sure that our ELK server container is up and running.
 
@@ -295,18 +295,25 @@ Install Filebeat on your DVWA VM:
   - Choose **System Logs**
   - Click on the **DEB** tab under **Getting Started** to view the correct Linux Filebeat installation instructions
 
+2. Creating the Filebeat Configuration File
 
+Next, create a Filebeat configuration file and edit this file so that it has the correct settings to work with your ELK server
 
-Install Filebeat on your DVWA VM:
+- Open a terminal and SSH into your jump box:
 
-Open your ELK server homepage.
+  - Start the Ansible container
+  - SSH into the Ansible container
 
-Click on Add Log Data.
-Choose System Logs.
-Click on the DEB tab under Getting Started to view the correct Linux Filebeat installation instructions
+Copy the provided configuration file for Filebeat to your Ansible container: [Filebeat Configuration File Template](YAML/Filebeat/filebeat-configuration.yml)
+
+Edit the configuration in this file to match the settings described in the installation instructions for your server
+- Because we are connecting your DVWA machines to the ELK server, we need to edit the file to include your ELK server's IP address
+  - Note that the default credentials are **elastic:changeme** and should not be changed at this step
+![](Images/filebeat-configuration-elasticsearch.png)
+
   - [elk-playbook.yml](YMAL/elk-playbook.yml)
   - [filebeat-playbook.yml](YMAL/filebeat-playbook.yml)
-  - [filebeat-configuration.yml](YMAL/filebeat-configuration.yml)
+
   - [filebeat.yml](YMAL/filebeat.yml)
   
 ##### Metricbeat Deployment
