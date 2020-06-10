@@ -270,7 +270,7 @@ To create an Ansible plyabook that installed Docker and configure a VM with the 
         
 - Create a YAML playbook file that you will use for web app configuration
 
-  - The playbook  should read similar to /etc/ansible/[webserver-playbook.yml](YMAL/Webserver/webserver-playbook.yml), the details for each part in the playbook as depicted below:
+  - The playbook  should read similar to /etc/ansible/[webserver-playbook.yml](YAML/Webserver/webserver-playbook.yml), the details for each part in the playbook as depicted below:
 
     - Use the Ansible **apt** module to install **docker.io** and **python-pip**
     
