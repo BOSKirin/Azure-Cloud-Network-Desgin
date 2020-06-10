@@ -466,6 +466,8 @@ Next, you needed to confirm that the ELK stack was receiving logs. Navigate back
 - On the same page, scroll to **Step 5: Module Status** and click **Check Data**
 - Scroll to the bottom and click on **Verify Incoming Data**
 ![](Images/metricbeat-verify-incoming-data.png)
+
+![](Images/metricbeat-data.png)
  
 ### Redundancy Testing
 
