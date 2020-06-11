@@ -221,7 +221,7 @@ Ansible was used to automate configuration of the ELK machine. No configuration 
             
             - name: Config elk VM with Docker
               hosts: elkservers
-              remote\_user: elk
+              remote_user: elk
               become: true
               tasks:
     
@@ -302,11 +302,11 @@ To create an Ansible plyabook that installed Docker and configure a VM with the 
     - _Note: make sure publish port **80** on the container to port **80** on the host
           
             - name: download and launch a docker web container
-              docker\_container:
+              docker_container:
                 name: dvwa
                 image: cyberxsecurity/dvwa
                 state: started
-                published\_ports: 80:80
+                published_ports: 80:80
 
   - Run your Ansible playbook on the new virtual machine
         
