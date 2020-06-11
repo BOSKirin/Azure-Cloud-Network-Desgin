@@ -209,7 +209,12 @@ Ansible was used to automate configuration of the ELK machine. No configuration 
 
 2. Downloading and Configuring the Container
 - Add the new VM to the Ansible `hosts` file
+
+![hosts](Images/hosts-config.png)
+
 - Create a new Ansible playbook to use for the new ELK server machine
+
+[elk-playbook.yml](Config/elk-playbook.yml)
 
   - The playbook implements the following tasks:
     - The header of the Ansible playbook can specify a different group of machines as well as a different remote user (in case you did not use the same admin name)
@@ -270,7 +275,7 @@ To create an Ansible plyabook that installed Docker and configure a VM with the 
         
 - Create a YAML playbook file that you will use for web app configuration
 
-  - The playbook  should read similar to /etc/ansible/[webserver-playbook.yml](YAML/Webserver/webserver-playbook.yml), the details for each part in the playbook as depicted below:
+  - The playbook  should read similar to /etc/ansible/[webserver-playbook.yml](Config/Webserver/webserver-playbook.yml), the details for each part in the playbook as depicted below:
 
     - Use the Ansible **apt** module to install **docker.io** and **python-pip**
     
@@ -319,8 +324,8 @@ To create an Ansible plyabook that installed Docker and configure a VM with the 
 
 Below are the solution configuration files for setting up the Filebeat configuration and playbook:
 
-  - [Filebeat Configuration](YAML/Filebeat/filebeat-configuration.yml)
-  - [Filebeat Playbook](YAML/Filebeat/filebeat-playbook.yml)
+  - [Filebeat Configuration](Config/Filebeat/filebeat-configuration.yml)
+  - [Filebeat Playbook](Config/Filebeat/filebeat-playbook.yml)
 
 1. Installing Filebeat on the DVWA Container
 
@@ -348,7 +353,7 @@ Next, create a Filebeat configuration file and edit this file so that it has the
   - Start the Ansible container
   - SSH into the Ansible container
 
-Copy the provided configuration file for Filebeat to your Ansible container: [Filebeat Configuration File Template](YAML/Filebeat/filebeat-configuration.yml)
+Copy the provided configuration file for Filebeat to your Ansible container: [Filebeat Configuration File Template](Config/Filebeat/filebeat-configuration.yml)
 
 Edit the configuration in this file to match the settings described in the installation instructions for your server
 - Because we are connecting your DVWA machines to the ELK server, we need to edit the file to include your ELK server's IP address
@@ -395,8 +400,8 @@ Next, you needed to confirm that the ELK stack was receiving logs. Navigate back
 
 Below are the solution configuration files for setting up the Metricbeat configuration and playbook:
 
-  - [Metricbeat Configuration](YAML/Metricbeat/metricbeat-configuration.yml)
-  - [Metricbeat Playbook](YAML/Metricbeat/metricbeat-playbook.yml)
+  - [Metricbeat Configuration](Config/Metricbeat/metricbeat-configuration.yml)
+  - [Metricbeat Playbook](Config/Metricbeat/metricbeat-playbook.yml)
 
 1. Installing Metricbeat on the DVWA Container
 
@@ -424,7 +429,7 @@ Next, create a Metricbeat configuration file and edit this file so that it has t
   - Start the Ansible container
   - SSH into the Ansible container
 
-Copy the provided configuration file for Metricbeat to your Ansible container: [Metricbeat Configuration File Template](YAML/Metricbeat/metricbeat-configuration.yml)
+Copy the provided configuration file for Metricbeat to your Ansible container: [Metricbeat Configuration File Template](Config/Metricbeat/metricbeat-configuration.yml)
 
 Edit the configuration in this file to match the settings described in the installation instructions for your server
 - Because we are connecting your DVWA machines to the ELK server, we need to edit the file to include your ELK server's IP address
